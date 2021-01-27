@@ -1,6 +1,8 @@
 library(tidyverse) # loads dplyr, ggplot2 and more
 library(tseries) # used in tsa
 library(corrplot) # To plot the correlation between pollutants
+library(imputeTS) # For filling in NAs
+library(forecast)
 
 X <- read.csv("pollution_us_2000_2016.csv") # Load in the data
 X_Ca <- subset(X, State == 'California') # Subset the data to California
@@ -44,3 +46,9 @@ ggplot(X_CoolSites, aes(x=Date.Local)) +
   facet_wrap(~Site.Num)
 # From these we can see that we are missing a number of values 
 # around 2012, so we decide to only look at data up to those missing values
+
+#Get the individual Time Series, and get them the same units
+X_NO2_1103 <- filter(X_CoolSites, Site.Num==1103) %>% select(Date.Local, NO2.Mean)
+X_NO2_5005 <- filter(X_CoolSites, Site.Num==5005) %>% select(Date.Local, NO2.Mean)
+X_O3_1103 <- filter(X_CoolSites, Site.Num==1103) %>% select(Date.Local, O3.Mean) %>% transform(O3.Mean=1000*O3.Mean)
+X_O3_5005 <- filter(X_CoolSites, Site.Num==5005) %>% select(Date.Local, O3.Mean) %>% transform(O3.Mean=1000*O3.Mean)

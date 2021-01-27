@@ -1,6 +1,15 @@
 library(tidyverse) # loads dplyr, ggplot2 and more
 library(tseries) # used in tsa
+library(corrplot) # To plot the correlation between pollutants
 
 X <- read.csv("pollution_us_2000_2016.csv") # Load in the data
 X_Ca <- subset(X, State == 'California') # Subset the data to California
 X_Ca$Date.Local <- as.Date(X_Ca$Date.Local) # Format the data in the date column as a date type.
+
+# Make a correlation plot to spot interactions between the pollutants
+X_Ca_Mean_corr <- select(X_Ca, NO2.Mean, O3.Mean, SO2.Mean, CO.Mean) %>%
+  drop_na()
+cor(X_Ca_Mean_corr)
+corrplot(cor(X_Ca_Mean_corr), method = "circle")
+# Might want to look at NO2 and O3, since these have the most data (no NAs)
+# Also a negative correlation between them

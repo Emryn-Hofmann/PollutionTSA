@@ -47,8 +47,26 @@ ggplot(X_CoolSites, aes(x=Date.Local)) +
 # From these we can see that we are missing a number of values 
 # around 2012, so we decide to only look at data up to those missing values
 
-#Get the individual Time Series, and get them the same units
+# Get the individual Time Series, and get them the same units
 X_NO2_1103 <- filter(X_CoolSites, Site.Num==1103) %>% select(Date.Local, NO2.Mean)
 X_NO2_5005 <- filter(X_CoolSites, Site.Num==5005) %>% select(Date.Local, NO2.Mean)
 X_O3_1103 <- filter(X_CoolSites, Site.Num==1103) %>% select(Date.Local, O3.Mean) %>% transform(O3.Mean=1000*O3.Mean)
 X_O3_5005 <- filter(X_CoolSites, Site.Num==5005) %>% select(Date.Local, O3.Mean) %>% transform(O3.Mean=1000*O3.Mean)
+
+# combining the two sites' O3s into one df
+O3s_both <- merge(X_O3_1103,X_O3_5005, by="Date.Local") %>%
+  rename(O3.Mean.1103=O3.Mean.x) %>%
+  rename(O3.Mean.5005=O3.Mean.y)
+
+O3s_both <- O3s_both %>% complete(Date.Local = seq.Date(
+  min(Date.Local), 
+  max(Date.Local), by="day")) # get NAs for missing dates
+
+# combining the two sites' NO2s into one df
+NO2s_both <- merge(X_NO2_1103,X_NO2_5005, by="Date.Local") %>%
+  rename(NO2.Mean.1103=NO2.Mean.x) %>%
+  rename(NO2.Mean.5005=NO2.Mean.y)
+
+NO2s_both <- NO2s_both %>% complete(Date.Local = seq.Date(
+  min(Date.Local), 
+  max(Date.Local), by="day")) # get NAs for missing dates

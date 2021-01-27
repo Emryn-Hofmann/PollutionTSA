@@ -24,10 +24,23 @@ X_Ca_NO2_and_O3 <- distinct(X_Ca_NO2_and_O3) # Get the distinct values, due to r
 ggplot(X_Ca_NO2_and_O3, aes(x=Date.Local)) +
   geom_line(aes(y=O3.Mean)) + 
   facet_wrap(~Site.Num)
-  
 ggplot(X_Ca_NO2_and_O3, aes(x=Date.Local)) +
   geom_line(aes(y=NO2.Mean)) + 
   facet_wrap(~Site.Num)
 
 # We can see that not all sites were active across the 16 years, and that
 # the gas levels vary by site
+
+
+# Selecting two sites of interest
+X_CoolSites <- filter(X_Ca_NO2_and_O3, Site.Num==1103| Site.Num==5005)
+
+# Plotting the sites again, but this time with only the two sites of interest.
+ggplot(X_CoolSites, aes(x=Date.Local)) +
+  geom_line(aes(y=NO2.Mean)) + 
+  facet_wrap(~Site.Num)
+ggplot(X_CoolSites, aes(x=Date.Local)) +
+  geom_line(aes(y=O3.Mean)) + 
+  facet_wrap(~Site.Num)
+# From these we can see that we are missing a number of values 
+# around 2012, so we decide to only look at data up to those missing values

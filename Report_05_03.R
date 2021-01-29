@@ -90,3 +90,11 @@ NO2.BothSitesGraph <- ggplot(NO2s_both, aes(x=Date.Local))+
   ylab("NO2 Mean value") +
   xlab("Date")
 NO2.BothSitesGraph
+
+O3.finding <- filter(O3s_both, O3s_both$Date.Local>="2004-04-24" & O3s_both$Date.Local<"2010-11-20")
+statsNA(O3.finding$O3.Mean.5005) # Checking for missing values, only 8.5%
+statsNA(O3.finding$O3.Mean.1103) # ditto
+
+NO2.finding <- filter(NO2s_both, NO2s_both$Date.Local>="2004-04-24" & NO2s_both$Date.Local<"2010-11-20")
+statsNA(NO2.finding$NO2.Mean.5005) # Checking for missing values, only 8.5%
+statsNA(NO2.finding$NO2.Mean.1103) # ditto

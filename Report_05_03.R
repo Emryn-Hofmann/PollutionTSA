@@ -70,3 +70,23 @@ NO2s_both <- merge(X_NO2_1103,X_NO2_5005, by="Date.Local") %>%
 NO2s_both <- NO2s_both %>% complete(Date.Local = seq.Date(
   min(Date.Local), 
   max(Date.Local), by="day")) # get NAs for missing dates
+
+# the O3 mean from both sites (two colours), along with their smoothed values
+O3.BothSitesGraph <- ggplot(O3s_both, aes(x=Date.Local))+
+  geom_line(aes(y=O3.Mean.1103), color="blue")+
+  geom_line(aes(y=O3.Mean.5005), color="red")+
+  geom_smooth(aes(y=O3.Mean.1103), color="cyan")+
+  geom_smooth(aes(y=O3.Mean.5005), color="pink") +
+  ylab("O3 Mean value") +
+  xlab("Date")
+O3.BothSitesGraph
+
+# the NO2 mean from both sites (two colours), along with their smoothed values
+NO2.BothSitesGraph <- ggplot(NO2s_both, aes(x=Date.Local))+
+  geom_line(aes(y=NO2.Mean.1103), color="blue")+
+  geom_line(aes(y=NO2.Mean.5005), color="red")+
+  geom_smooth(aes(y=NO2.Mean.1103), color="cyan")+
+  geom_smooth(aes(y=NO2.Mean.5005), color="pink") +
+  ylab("NO2 Mean value") +
+  xlab("Date")
+NO2.BothSitesGraph

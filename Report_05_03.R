@@ -98,3 +98,8 @@ statsNA(O3.finding$O3.Mean.1103) # ditto
 NO2.finding <- filter(NO2s_both, NO2s_both$Date.Local>="2004-04-24" & NO2s_both$Date.Local<"2010-11-20")
 statsNA(NO2.finding$NO2.Mean.5005) # Checking for missing values, only 8.5%
 statsNA(NO2.finding$NO2.Mean.1103) # ditto
+
+# So we subset the data, and only do analysis on the data between 24th April 2004 and 31st December 2010
+# And impute the other missing values
+O3s_both <- filter(O3s_both, O3s_both$Date.Local>="2004-04-24" & O3s_both$Date.Local<"2010-11-20") %>% na_kalman()
+NO2s_both <- filter(NO2s_both, NO2s_both$Date.Local>="2004-04-24" & NO2s_both$Date.Local<"2010-11-20")  %>% na_kalman()

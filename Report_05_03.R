@@ -103,3 +103,17 @@ statsNA(NO2.finding$NO2.Mean.1103) # ditto
 # And impute the other missing values
 O3s_both <- filter(O3s_both, O3s_both$Date.Local>="2004-04-24" & O3s_both$Date.Local<"2010-11-20") %>% na_kalman()
 NO2s_both <- filter(NO2s_both, NO2s_both$Date.Local>="2004-04-24" & NO2s_both$Date.Local<"2010-11-20")  %>% na_kalman()
+
+# To get weekly means
+O3s_both$week_id <- rep(seq_len(length(O3s_both$Date.Local) / 7), each = 7)
+O3s_both.weekly <- aggregate(cbind(O3.Mean.1103, O3.Mean.5005) ~ week_id, O3s_both, mean)
+O3s_both.weekly <- mutate(O3s_both.weekly, Date.Local=as.Date(12533+(7*(week_id-1)))) %>% select(Date.Local, O3.Mean.1103, O3.Mean.5005)
+NO2s_both$week_id <- rep(seq_len(length(NO2s_both$Date.Local) / 7), each = 7)
+NO2s_both.weekly <- aggregate(cbind(NO2.Mean.1103, NO2.Mean.5005) ~ week_id, NO2s_both, mean)
+NO2s_both.weekly <- mutate(NO2s_both.weekly, Date.Local=as.Date(12533+(7*(week_id-1)))) %>% select(Date.Local, NO2.Mean.1103, NO2.Mean.5005)
+
+# Produce some time series objects
+O3.1103.ts <- ts(O3s_both.weekly$O3.Mean.1103, frequency = 52)
+O3.5005.ts <- ts(O3s_both.weekly$O3.Mean.5005, frequency = 52)
+NO2.1103.ts <- ts(NO2s_both.weekly$NO2.Mean.1103, frequency = 52)
+NO2.5005.ts <- ts(NO2s_both.weekly$NO2.Mean.5005, frequency = 52)

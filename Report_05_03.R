@@ -4,6 +4,45 @@ library(corrplot) # To plot the correlation between pollutants
 library(imputeTS) # For filling in NAs
 library(forecast)
 
+# From http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_%28ggplot2%29/
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+
+
 X <- read.csv("pollution_us_2000_2016.csv") # Load in the data
 X_Ca <- subset(X, State == 'California') # Subset the data to California
 X_Ca$Date.Local <- as.Date(X_Ca$Date.Local) # Format the data in the date column as a date type.
@@ -117,3 +156,30 @@ O3.1103.ts <- ts(O3s_both.weekly$O3.Mean.1103, frequency = 52)
 O3.5005.ts <- ts(O3s_both.weekly$O3.Mean.5005, frequency = 52)
 NO2.1103.ts <- ts(NO2s_both.weekly$NO2.Mean.1103, frequency = 52)
 NO2.5005.ts <- ts(NO2s_both.weekly$NO2.Mean.5005, frequency = 52)
+
+# the O3 mean from both sites (two colours), along with their smoothed average values
+O3.BothSitesGraph <- ggplot(O3s_both, aes(x=Date.Local))+
+  geom_line(aes(y=O3.Mean.1103), color="blue")+
+  geom_line(aes(y=O3.Mean.5005), color="red")+
+  geom_smooth(aes(y=O3.Mean.1103), color="cyan")+
+  geom_smooth(aes(y=O3.Mean.5005), color="pink") +
+  ylab("O3 Mean value") +
+  xlab("Date")
+O3.BothSitesGraph
+adf.test(O3.1103.ts) # Stationary
+adf.test(O3.5005.ts) # Stationary
+
+# the NO2 mean from both sites (two colours), along with their smoothed average values
+NO2.BothSitesGraph <- ggplot(NO2s_both, aes(x=Date.Local))+
+  geom_line(aes(y=NO2.Mean.1103), color="blue")+
+  geom_line(aes(y=NO2.Mean.5005), color="red")+
+  geom_smooth(aes(y=NO2.Mean.1103), color="cyan")+
+  geom_smooth(aes(y=NO2.Mean.5005), color="pink") +
+  ylab("NO2 Mean value") +
+  xlab("Date")
+NO2.BothSitesGraph
+adf.test(NO2.1103.ts) # Stationary
+adf.test(NO2.5005.ts) # Stationary
+multiplot(O3.BothSitesGraph, NO2.BothSitesGraph,cols=2) # To get a nice side-by-side plot in RStudio
+#0.0213ppm NO2 - 21.3
+#0.0509ppm O3 -50.9

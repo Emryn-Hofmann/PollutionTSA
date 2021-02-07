@@ -183,3 +183,22 @@ adf.test(NO2.5005.ts) # Stationary
 multiplot(O3.BothSitesGraph, NO2.BothSitesGraph,cols=2) # To get a nice side-by-side plot in RStudio
 #0.0213ppm NO2 - 21.3
 #0.0509ppm O3 -50.9
+
+# These plots show the 4 time series, along with their smoothed averages, and the WHO guideline average.
+O3.1103Graph <- ggplot(O3s_both, aes(x=Date.Local))+
+  geom_line(aes(y=O3.Mean.1103))+
+  geom_smooth(aes(y=O3.Mean.1103))+
+  geom_hline(yintercept =50.9, color="red")
+O3.5005Graph <- ggplot(O3s_both, aes(x=Date.Local))+
+  geom_line(aes(y=O3.Mean.5005))+
+  geom_smooth(aes(y=O3.Mean.5005))+
+  geom_hline(yintercept=50.9, color="red")
+NO2.1103Graph <- ggplot(NO2s_both, aes(x=Date.Local))+
+  geom_line(aes(y=NO2.Mean.1103))+
+  geom_smooth(aes(y=NO2.Mean.1103))+
+  geom_hline(yintercept=21.3, color="red")
+NO2.5005Graph <- ggplot(NO2s_both, aes(x=Date.Local))+
+  geom_line(aes(y=NO2.Mean.5005))+
+  geom_smooth(aes(y=NO2.Mean.5005))+
+  geom_hline(yintercept=21.3, color="red")
+multiplot(O3.1103Graph,O3.5005Graph,NO2.1103Graph,NO2.5005Graph, cols=2)

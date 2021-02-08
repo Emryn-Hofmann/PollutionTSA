@@ -202,3 +202,13 @@ NO2.5005Graph <- ggplot(NO2s_both, aes(x=Date.Local))+
   geom_smooth(aes(y=NO2.Mean.5005))+
   geom_hline(yintercept=21.3, color="red")
 multiplot(O3.1103Graph,O3.5005Graph,NO2.1103Graph,NO2.5005Graph, cols=2)
+
+#Split training and test data for all 4 time series:
+N_1103_O3 <- length(O3.1103.ts)
+N_1103_NO2 <- length(NO2.1103.ts)
+N_5005_O3 <- length(O3.5005.ts)
+N_5005_NO2 <- length(NO2.5005.ts)
+#clearly, all the same length
+ts.length <- length(O3.1103.ts)
+test.length <- floor(0.1*ts.length)
+train.length <- ceiling(0.9*ts.length)

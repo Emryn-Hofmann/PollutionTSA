@@ -212,3 +212,27 @@ N_5005_NO2 <- length(NO2.5005.ts)
 ts.length <- length(O3.1103.ts)
 test.length <- floor(0.1*ts.length)
 train.length <- ceiling(0.9*ts.length)
+
+# Tried it not diffed, but concluded they're not stationary, so needed to diff
+O3.1103.acf = acf(O3.1103.ts[1:train.length], demean=FALSE, plot=TRUE, lag.max=2401)
+O3.1103.pacf = pacf(O3.1103.ts[1:train.length], demean=FALSE, plot=TRUE, lag.max=2401)
+O3.1103.diffed.acf = acf(diff(O3.1103.ts[1:train.length]), demean=FALSE, plot=TRUE, lag.max=2401)
+# Interesting behaviour at regular lags, redo plot with default lag.max to inspect
+O3.1103.diffed.pacf = pacf(diff(O3.1103.ts[1:train.length]), demean=FALSE, plot=TRUE, lag.max=2443)
+# Quite noisy still, will try default lag.max to inspect
+O3.1103.diffed.acf = acf(diff(O3.1103.ts[1:train.length]), demean=FALSE, plot=TRUE)
+#Spikes at lags k=52n, i.e. yearly seasonality
+O3.1103.diffed.pacf = pacf(diff(O3.1103.ts[1:train.length]), demean=FALSE, plot=TRUE)
+# Definite seasonality
+
+# Tried it not diffed, but concluded they're not stationary, so needed to diff
+NO2.1103.acf = acf(NO2.1103.ts[1:train.length], demean=FALSE, plot=TRUE, lag.max=2401)
+NO2.1103.pacf = pacf(NO2.1103.ts[1:train.length], demean=FALSE, plot=TRUE, lag.max=2401)
+NO2.1103.diffed.acf = acf(diff(NO2.1103.ts[1:train.length]), demean=FALSE, plot=TRUE, lag.max=2401)
+# Interesting behaviour at regular lags, redo plot with default lag.max to inspect
+NO2.1103.diffed.pacf = pacf(diff(NO2.1103.ts[1:train.length]), demean=FALSE, plot=TRUE, lag.max=2401)
+# Quite noisy still, will try default lag.max to inspect
+NO2.1103.diffed.acf = acf(diff(NO2.1103.ts[1:train.length]), demean=FALSE, plot=TRUE)
+#Spikes at lags k=52n, i.e. weekly seasonality
+NO2.1103.diffed.pacf = pacf(diff(NO2.1103.ts[1:train.length]), demean=FALSE, plot=TRUE)
+# Positives only at lags k=52n, but large negative lags elsewhere...

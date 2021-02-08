@@ -236,3 +236,9 @@ NO2.1103.diffed.acf = acf(diff(NO2.1103.ts[1:train.length]), demean=FALSE, plot=
 #Spikes at lags k=52n, i.e. weekly seasonality
 NO2.1103.diffed.pacf = pacf(diff(NO2.1103.ts[1:train.length]), demean=FALSE, plot=TRUE)
 # Positives only at lags k=52n, but large negative lags elsewhere...
+
+#Differencing with lag 52, to remove seasonality.
+O3.1103.yearly.diff <- diff(O3.1103.ts[1:train.length], lag=52)
+O3.5005.yearly.diff <- diff(O3.5005.ts[1:train.length], lag=52)
+NO2.1103.yearly.diff <- diff(NO2.1103.ts[1:train.length], lag=52)
+NO2.5005.yearly.diff <- diff(NO2.5005.ts[1:train.length], lag=52)

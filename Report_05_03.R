@@ -358,3 +358,34 @@ for (i in 1:34){
 }
 MAE.O3.5005 = mean(abs(d))
 RMSE.O3.5005 = sqrt(mean(d^2))
+
+#Now NO2 for 5005
+#Trying ACF & PACF again
+NO2.5005.acf = acf(NO2.5005.yearly.diff, demean=FALSE, plot=TRUE)
+NO2.5005.pacf = pacf(NO2.5005.yearly.diff, demean=FALSE, plot=TRUE)
+# Indicates the following model on the diffed data - SARIMA(1,0,2,0,1,1,52)
+mod5005NO2 = arima(NO2.5005.yearly.diff, order=c(1,0,2), seasonal = list(order = c(0,0,1), period = 52))
+mod5005NO2.tsdiag <- tsdiag(mod5005NO2)
+mod5005NO2.pacf <- pacf(mod5005NO2$residuals)
+mod5005NO2.acf <- acf(mod5005NO2$residuals)
+#which is this model on regular data - SARIMA(1,0,2,0,1,1,52)
+mod5005NO2 = arima(NO2.5005.ts[1:train.length], order=c(1,0,2), seasonal = list(order = c(0,1,1), period = 52))
+mod5005NO2.tsdiag <- tsdiag(mod5005NO2)
+mod5005NO2.pacf <- pacf(mod5005NO2$residuals)
+mod5005NO2.acf <- acf(mod5005NO2$residuals)
+# Now we forecast and plot
+mod5005NO2 %>% forecast(h=test.length) %>% autoplot()+
+  xlab("Year")+
+  ylab("NO2 weekly means for LA, site 5005 in ppm")+
+  scale_x_continuous(breaks=c(37,89,142,194,246,298), labels=c("2005","2006","2007","2008","2009","2010"))
+# Calculate the metrics
+NO2.5005.fc <- mod5005NO2 %>% forecast(h=test.length)
+NO2.5005.fc <- NO2.5005.fc$mean
+test.NO2.5005 <- as.vector(NO2.5005.ts[310:343])
+fc.NO2.5005 <- as.vector(NO2.5005.fc)
+d = vector()
+for (i in 1:34){ 
+  d[i] = fc.NO2.5005[i]-test.NO2.5005[i] 
+}
+MAE.NO2.5005 = mean(abs(d))
+RMSE.NO2.5005 = sqrt(mean(d^2))

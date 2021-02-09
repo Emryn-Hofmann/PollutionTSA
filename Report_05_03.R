@@ -389,3 +389,8 @@ for (i in 1:34){
 }
 MAE.NO2.5005 = mean(abs(d))
 RMSE.NO2.5005 = sqrt(mean(d^2))
+
+#List MAEs
+print(c(MAE.O3.1103,MAE.NO2.1103,MAE.O3.5005,MAE.NO2.5005))
+#List RMSEs
+print(c(RMSE.O3.1103,RMSE.NO2.1103,RMSE.O3.5005,RMSE.NO2.5005))

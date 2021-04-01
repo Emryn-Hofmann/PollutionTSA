@@ -328,3 +328,33 @@ NO2.5005.diffed.acf = acf(diff(NO2.5005.ts[1:train.length]), demean=FALSE, plot=
 #Spikes at lags k=52n, i.e. weekly seasonality
 NO2.5005.diffed.pacf = pacf(diff(NO2.5005.ts[1:train.length]), demean=FALSE, plot=TRUE)
 # Positives only at lags k=52n, but large negative lags elsewhere...
+
+#Trying ACF & PACF again
+O3.5005.acf = acf(O3.5005.yearly.diff, demean=FALSE, plot=TRUE)
+O3.5005.pacf = pacf(O3.5005.yearly.diff, demean=FALSE, plot=TRUE)
+# Indicates the following model on the diffed data - SARIMA(6,0,0,0,1,1,52)
+mod5005O3 = arima(O3.5005.yearly.diff, order=c(6,0,0), seasonal = list(order = c(0,0,1), period = 52))
+mod5005O3.tsdiag <- tsdiag(mod5005O3)
+mod5005O3.pacf <- pacf(mod5005O3$residuals)
+mod5005O3.acf <- acf(mod5005O3$residuals)
+#which is this model on regular data - SARIMA(1,0,0,0,1,1,52)
+mod5005O3 = arima(O3.5005.ts[1:train.length], order=c(6,0,0), seasonal = list(order = c(0,1,1), period = 52))
+mod5005O3.tsdiag <- tsdiag(mod5005O3)
+mod5005O3.pacf <- pacf(mod5005O3$residuals)
+mod5005O3.acf <- acf(mod5005O3$residuals)
+# Now we forecast and plot
+mod5005O3 %>% forecast(h=test.length) %>% autoplot()+
+  ylab("O3 weekly means for LA, site 5005 in ppm")+
+  scale_x_continuous(breaks=c(37,89,142,194,246,298), labels=c("2005","2006","2007","2008","2009","2010"))+
+  xlab("Year")
+# Calculate the metrics
+O3.5005.fc <- mod5005O3 %>% forecast(h=test.length)
+O3.5005.fc <- O3.5005.fc$mean
+test.O3.5005 <- as.vector(O3.5005.ts[310:343])
+fc.O3.5005 <- as.vector(O3.5005.fc)
+d = vector()
+for (i in 1:34){ 
+  d[i] = fc.O3.5005[i]-test.O3.5005[i] 
+}
+MAE.O3.5005 = mean(abs(d))
+RMSE.O3.5005 = sqrt(mean(d^2))
